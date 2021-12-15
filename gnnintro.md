@@ -37,12 +37,4 @@ Ahora que conocemos la zona de juego, podremos interactuar con el modelo. :)
 
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/4sr3smWQv8Y/0.jpg)](https://www.youtube.com/watch?v=4sr3smWQv8Y)
 
-<iframe
-    width="640"
-    height="480"
-    src="www.youtube.com/watch?v=4sr3smWQv8Y"
-    frameborder="0"
-    allow="autoplay; encrypted-media"
-    allowfullscreen
->
-</iframe>
+<iframe width="420" height="315" src="http://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe>
