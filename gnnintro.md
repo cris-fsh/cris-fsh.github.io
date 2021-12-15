@@ -21,7 +21,7 @@ Las características que podemos personalizar en este modelo de GNN son:
 
 3. La función de agregación utilizada en *pooling*: máximo, media o suma.
 
-4. Los atributos del gráfico que se actualizan, o  los estilos de *message passing*: nodos, aristas y representación global. Estos de controlan mediante interruptores booleanos (activación o desactivación). 
+4. Los atributos del gráfico que se actualizan, o  los estilos de *message passing*: nodos, aristas y representación global. Estos se controlan mediante interruptores booleanos (activación o desactivación). 
 
 ![Dashboard interactivo](/images/dashboard_model.png)
 
@@ -38,3 +38,5 @@ Ahora que conocemos la zona de juego, podremos interactuar con el modelo. :)
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/4sr3smWQv8Y/0.jpg)](https://www.youtube.com/watch?v=4sr3smWQv8Y)
 
 <iframe width="420" height="315" src="http://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/2neuM0JQoVQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
