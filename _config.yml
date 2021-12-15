@@ -1,1 +1,6 @@
 theme: jekyll-theme-tactile
+plugins:
+  - jekyll-relative-links
+  - jemoji
+relative_links:
+  enabled: true
