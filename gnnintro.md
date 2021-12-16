@@ -157,13 +157,13 @@ Ahora que conocemos la zona de juego, podremos interactuar con el modelo. :)
 
 ## **Algunas lecciones empíricas de diseño GNN**
 
-Al explorar las opciones de arquitectura anteriores, es posible que haya encontrado que algunos modelos tienen un mejor rendimiento que otros. ¿Hay algunas opciones claras de diseño de GNN que nos darán un mejor rendimiento? Por ejemplo, ¿los modelos GNN más profundos funcionan mejor que los menos profundos? ¿O hay una clara elección entre funciones de agregación? Las respuestas van a depender de los datos, [1] [2], e incluso diferentes formas de caracterizar y construir gráficos pueden dar diferentes respuestas.
+Al explorar las opciones de arquitectura anteriores, es posible que haya encontrado que algunos modelos tienen un mejor rendimiento que otros. ¿Hay algunas opciones claras de diseño de GNN que nos darán un mejor rendimiento? Por ejemplo, ¿los modelos GNN más profundos funcionan mejor que los menos profundos? ¿O hay una clara elección entre funciones de agregación? Las respuestas van a depender de los datos, [8] [9], e incluso diferentes formas de caracterizar y construir gráficos pueden dar diferentes respuestas.
 
 Con la siguiente figura, exploramos el espacio de las arquitecturas GNN y el desempeño de esta tarea a través de algunas opciones de diseño importantes: estilo de transmisión de mensajes, dimensionalidad de las incrustaciones, número de capas y tipo de operación de agregación.
 
 Cada punto del diagrama de dispersión representa un modelo: el eje x es el número de variables entrenables y el eje y es el rendimiento.
 
-![Figura 1][img1]
+![Figura 1][img13]
 
 Diagrama de dispersión del rendimiento de cada modelo frente a su número de variables entrenables.
 
@@ -171,7 +171,7 @@ Lo primero que hay que notar es que, sorprendentemente, un mayor número de par�
 
 A continuación, podemos observar las distribuciones de rendimiento agregadas en función de la dimensionalidad de las representaciones aprendidas para diferentes atributos de gráficos.
 
-![Figura 2][img2]
+![Figura 2][img14]
 
 Rendimiento agregado de modelos en diferentes dimensiones de nodo, borde y globales.
 
@@ -179,11 +179,11 @@ Podemos notar que los modelos con mayor dimensionalidad tienden a tener un mejor
 
 A continuación, podemos ver el desglose del rendimiento en función del número de capas GNN.
 
-![Figura 3][img3]
+![Figura 3][img15]
 
 Gráfico de número de capas frente al rendimiento del modelo y diagrama de dispersión del rendimiento del modelo frente al número de parámetros. Cada punto está coloreado por el número de capas.
 
-El diagrama de caja muestra una tendencia similar, mientras que el rendimiento medio tiende a aumentar con el número de capas, los modelos de mejor rendimiento no tienen tres o cuatro capas, sino dos. Además, el límite inferior de rendimiento disminuye con cuatro capas. Este efecto se ha observado antes, los GNN con un mayor número de capas transmitirán información a una distancia mayor y pueden correr el riesgo de que sus representaciones de nodos se 'diluyan' a partir de muchas iteraciones sucesivas. [3]
+El diagrama de caja muestra una tendencia similar, mientras que el rendimiento medio tiende a aumentar con el número de capas, los modelos de mejor rendimiento no tienen tres o cuatro capas, sino dos. Además, el límite inferior de rendimiento disminuye con cuatro capas. Este efecto se ha observado antes, los GNN con un mayor número de capas transmitirán información a una distancia mayor y pueden correr el riesgo de que sus representaciones de nodos se 'diluyan' a partir de muchas iteraciones sucesivas. [10]
 
 En general, parece que la suma tiene una mejora muy leve en el rendimiento medio, pero max o mean pueden dar modelos igualmente buenos. Esto es útil para contextualizar cuando se observan [las capacidades discriminatorias/expresivas](https://distill.pub/2021/gnn-intro/#comparing-aggregation-operations) de las operaciones de agregación.
 
@@ -191,7 +191,7 @@ Las exploraciones anteriores han dado mensajes contradictorios. Podemos encontra
 
 Aquí desglosamos el rendimiento según el estilo de transmisión de mensajes. En ambos extremos, consideramos modelos que no se comunican entre entidades gráficas ("ninguna") y modelos que tienen mensajes pasados ​​entre nodos, bordes y globales.
 
-![Figura 4][img4]
+![Figura 4][img16]
 
 Gráfico de transmisión de mensajes frente al rendimiento del modelo y diagrama de dispersión del rendimiento del modelo frente al número de parámetros. Cada punto está coloreado por el paso del mensaje. 
 
@@ -233,11 +233,33 @@ Una de las fronteras de la investigación GNN no es la creación de nuevos model
 
 [img12]: https://distill.pub/2021/gnn-intro/edges_level_diagram.c40677db.png "Tarea a nivel de borde"
 
+[img13]: visualization.png "Figura 1"
+
+[img14]: visualization2.png "Figura 2"
+
+[img15]: visualization3.png "Figura 3"
+
+[img16]: visualization4.png "Figura 4"
+
 # **Referencias**
-1. Gráfico de evaluación comparativa Redes neuronales
+1. Comprensión de las convoluciones en los gráficos
+Daigavane, A., Ravindran, B. y Aggarwal, G., 2021. Distill. DOI: 10.23915 / destilado.00032
+2. Modelo gráfico de red neuronal
+Scarselli, F., Gori, M., Tsoi, AC, Hagenbuchner, M. y Monfardini, G., 2009. Transacciones IEEE sobre redes neuronales, vol. 20 (1), págs. 61--80.
+3. Redes convolucionales en gráficos para el aprendizaje de huellas dactilares moleculares
+Duvenaud, D., Maclaurin, D., Aguilera-Iparraguirre, J., Gomez-Bombarelli, R., Hirzel, T., Aspuru-Guzik, A. y Adams, RP, 2015.
+4. Representaciones distribuidas de palabras y frases y su composicionalidad
+Mikolov, T., Sutskever, I., Chen, K., Corrado, G. y Dean, J., 2013.
+5. BERT: Entrenamiento previo de transformadores bidireccionales profundos para la comprensión del lenguaje
+Devlin, J., Chang, M., Lee, K. y Toutanova, K., 2018.
+6. Glove: Vectores globales para la representación de palabras
+Pennington, J., Socher, R. y Manning, C., 2014. Actas de la Conferencia de 2014 sobre métodos empíricos en el procesamiento del lenguaje natural (EMNLP).
+7. KONECT Kunegis, J., 2013. Actas de la 22ª Conferencia Internacional sobre World Wide Web - WWW '13 Companion.
+8. Gráfico de evaluación comparativa Redes neuronales
 V.P. Dwivedi, CK Joshi, T. Laurent, Y. Bengio, X. Bresson.
 2020
-2. Espacio de diseño para redes neuronales gráficas
+9. Espacio de diseño para redes neuronales gráficas
 J. You, R. Ying, J. Leskovec. 2020.
-3. Agregación de vecindario principal para redes gráficas 
+10. Agregación de vecindario principal para redes gráficas 
 G. Corso, L. Cavalleri, D. Beaini, P. Lio, P. Velickovic. 2020.
+
