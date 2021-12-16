@@ -119,32 +119,6 @@ A la izquierda tenemos un gráfico inicial construido a partir de la escena visu
 
 ![Tarea a nivel de borde 2][img12]
 
-[img1]: https://artfromcode.files.wordpress.com/2017/04/index_img_41.jpg "Redes neuronales gráficas"
-
-[img2]: https://sites.google.com/site/unidad6teoriadegrafos/_/rsrc/1464617456012/6-1-elementos-y-caracteristicas-de-los-grafos/6-1-1-componentes-de-un-grafo-aristas-vertices-lazos-y-valencia/grafo%28nodo%20y%20arista.png "Componentes de un grafico"
-
-[img3]: https://blogs.ua.es/jabibics/files/2011/01/grafos1.png "Clasificación de gráficos"
-
-[img4]: https://upload.wikimedia.org/wikipedia/commons/f/f9/Matriz_de_adyacencia.jpg "Ejemplo de imágenes como gráficos"
-
-[img5]: https://cdn.kastatic.org/ka-perseus-images/faa1c44e1ab848623096b85b9aa32626b8d8d040.png "Ejemplo de textos como gráficos"
-
-[img6]: https://culturacientifica.com/app/uploads/2014/08/Cayley-1.png "Moléculas como gráficos"
-
-[img7]: https://miro.medium.com/max/724/0*kWGR5wsMTeL_PYZV "Redes sociales como gráficos 1"
-
-[img8]: https://www.madrimasd.org/blogs/matematicas/files/2020/03/six2.jpg "Redes sociales como gráficos 2"
-
-[img9]: https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/SMILES.png/330px-SMILES.png "Tarea a nivel de gráfico"
-
-[img10]: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNkLcMzq12ny7pw5HuZu4N8xSNBZGq-r8ZaQ&usqp=CAU "Tarea a nivel de nodo"
-
-[img11]: https://distill.pub/2021/gnn-intro/merged.0084f617.png "Tarea a nivel de borde"
-
-[img12]: https://distill.pub/2021/gnn-intro/edges_level_diagram.c40677db.png "Tarea a nivel de borde"
-
-
-
 ## **Zona de juego GNN**
 
 Hasta este punto hemos conocido los componentes para construir la arquitectura de una GNN; el siguiente paso es ir a la práctica.
@@ -180,3 +154,77 @@ Los grafos, al estar construidos por vectores de alta dimensión, los reducimos 
 Ahora que conocemos la zona de juego, podremos interactuar con el modelo. :)
 
 <iframe width="640" height="480" src="https://www.youtube.com/embed/icW-n6riXIQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+## **Algunas lecciones empíricas de diseño GNN**
+
+<div style="text-align: justify">Al explorar las opciones de arquitectura anteriores, es posible que haya encontrado que algunos modelos tienen un mejor rendimiento que otros. ¿Hay algunas opciones claras de diseño de GNN que nos darán un mejor rendimiento? Por ejemplo, ¿los modelos GNN más profundos funcionan mejor que los menos profundos? ¿O hay una clara elección entre funciones de agregación? Las respuestas van a depender de los datos, [1] [2], e incluso diferentes formas de caracterizar y construir gráficos pueden dar diferentes respuestas.
+
+Con la siguiente figura, exploramos el espacio de las arquitecturas GNN y el desempeño de esta tarea a través de algunas opciones de diseño importantes: estilo de transmisión de mensajes, dimensionalidad de las incrustaciones, número de capas y tipo de operación de agregación.
+
+Cada punto del diagrama de dispersión representa un modelo: el eje x es el número de variables entrenables y el eje y es el rendimiento.
+
+![Figura 1][img1]
+
+Diagrama de dispersión del rendimiento de cada modelo frente a su número de variables entrenables.
+
+Lo primero que hay que notar es que, sorprendentemente, un mayor número de parámetros se correlaciona con un mayor rendimiento. Los GNN son un tipo de modelo muy eficiente en cuanto a parámetros: incluso para una pequeña cantidad de parámetros (3k) ya podemos encontrar modelos con alto rendimiento.
+
+A continuación, podemos observar las distribuciones de rendimiento agregadas en función de la dimensionalidad de las representaciones aprendidas para diferentes atributos de gráficos.
+
+![Figura 2][img2]
+
+Rendimiento agregado de modelos en diferentes dimensiones de nodo, borde y globales.
+
+Podemos notar que los modelos con mayor dimensionalidad tienden a tener un mejor rendimiento medio y de límite inferior, pero no se encuentra la misma tendencia para el máximo. Algunos de los modelos de mejor rendimiento se pueden encontrar para dimensiones más pequeñas. Dado que una mayor dimensionalidad también va a involucrar un mayor número de parámetros, estas observaciones van de la mano con la figura anterior.
+
+A continuación, podemos ver el desglose del rendimiento en función del número de capas GNN.
+
+![Figura 3][img3]
+
+Gráfico de número de capas frente al rendimiento del modelo y diagrama de dispersión del rendimiento del modelo frente al número de parámetros. Cada punto está coloreado por el número de capas.
+
+El diagrama de caja muestra una tendencia similar, mientras que el rendimiento medio tiende a aumentar con el número de capas, los modelos de mejor rendimiento no tienen tres o cuatro capas, sino dos. Además, el límite inferior de rendimiento disminuye con cuatro capas. Este efecto se ha observado antes, los GNN con un mayor número de capas transmitirán información a una distancia mayor y pueden correr el riesgo de que sus representaciones de nodos se 'diluyan' a partir de muchas iteraciones sucesivas. [3]
+
+En general, parece que la suma tiene una mejora muy leve en el rendimiento medio, pero max o mean pueden dar modelos igualmente buenos. Esto es útil para contextualizar cuando se observan [las capacidades discriminatorias/expresivas](https://distill.pub/2021/gnn-intro/#comparing-aggregation-operations) de las operaciones de agregación.
+
+Las exploraciones anteriores han dado mensajes contradictorios. Podemos encontrar tendencias medias en las que una mayor complejidad proporciona un mejor rendimiento, pero podemos encontrar contraejemplos claros en los que los modelos con menos parámetros, número de capas o dimensionalidad funcionan mejor. Una tendencia mucho más clara se refiere a la cantidad de atributos que se transmiten información entre sí.
+
+Aquí desglosamos el rendimiento según el estilo de transmisión de mensajes. En ambos extremos, consideramos modelos que no se comunican entre entidades gráficas ("ninguna") y modelos que tienen mensajes pasados ​​entre nodos, bordes y globales.
+
+![Figura 4][img4]
+
+Gráfico de transmisión de mensajes frente al rendimiento del modelo y diagrama de dispersión del rendimiento del modelo frente al número de parámetros. Cada punto está coloreado por el paso del mensaje. 
+
+En general, vemos que cuantos más atributos del gráfico se comuniquen, mejor será el rendimiento del modelo promedio. Nuestra tarea se centra en las representaciones globales, por lo que aprender explícitamente este atributo también tiende a mejorar el rendimiento. Nuestras representaciones de nodos también parecen ser más útiles que las representaciones de bordes, lo que tiene sentido ya que se carga más información en estos atributos.
+
+Hay muchas direcciones en las que puede ir desde aquí para obtener un mejor rendimiento. Deseamos destacar dos direcciones generales, una relacionada con algoritmos gráficos más sofisticados y otra hacia el gráfico en sí.
+
+Una de las fronteras de la investigación GNN no es la creación de nuevos modelos y arquitecturas, sino “cómo construir gráficos”, para ser más precisos, dotar a los gráficos de estructuras o relaciones adicionales que se puedan aprovechar. Como vimos en términos generales, cuanto más se comunican los atributos del gráfico, más tendemos a tener mejores modelos. En este caso particular, podríamos considerar hacer que los gráficos moleculares sean más ricos en características, agregando relaciones espaciales adicionales entre nodos, agregando bordes que no sean enlaces o relaciones explícitas que se puedan aprender entre subgráficos.
+
+
+
+
+[img1]: https://artfromcode.files.wordpress.com/2017/04/index_img_41.jpg "Redes neuronales gráficas"
+
+[img2]: https://sites.google.com/site/unidad6teoriadegrafos/_/rsrc/1464617456012/6-1-elementos-y-caracteristicas-de-los-grafos/6-1-1-componentes-de-un-grafo-aristas-vertices-lazos-y-valencia/grafo%28nodo%20y%20arista.png "Componentes de un grafico"
+
+[img3]: https://blogs.ua.es/jabibics/files/2011/01/grafos1.png "Clasificación de gráficos"
+
+[img4]: https://upload.wikimedia.org/wikipedia/commons/f/f9/Matriz_de_adyacencia.jpg "Ejemplo de imágenes como gráficos"
+
+[img5]: https://cdn.kastatic.org/ka-perseus-images/faa1c44e1ab848623096b85b9aa32626b8d8d040.png "Ejemplo de textos como gráficos"
+
+[img6]: https://culturacientifica.com/app/uploads/2014/08/Cayley-1.png "Moléculas como gráficos"
+
+[img7]: https://miro.medium.com/max/724/0*kWGR5wsMTeL_PYZV "Redes sociales como gráficos 1"
+
+[img8]: https://www.madrimasd.org/blogs/matematicas/files/2020/03/six2.jpg "Redes sociales como gráficos 2"
+
+[img9]: https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/SMILES.png/330px-SMILES.png "Tarea a nivel de gráfico"
+
+[img10]: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNkLcMzq12ny7pw5HuZu4N8xSNBZGq-r8ZaQ&usqp=CAU "Tarea a nivel de nodo"
+
+[img11]: https://distill.pub/2021/gnn-intro/merged.0084f617.png "Tarea a nivel de borde"
+
+[img12]: https://distill.pub/2021/gnn-intro/edges_level_diagram.c40677db.png "Tarea a nivel de borde"
+
