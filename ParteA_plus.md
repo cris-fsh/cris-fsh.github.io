@@ -14,7 +14,7 @@ Lo primero que hay que notar es que, sorprendentemente, un mayor número de par�
 
 A continuación, podemos observar las distribuciones de rendimiento agregadas en función de la dimensionalidad de las representaciones aprendidas para diferentes atributos de gráficos.
 
-![Figura 2](visualization2.png)
+![Figura 2][img2]
 
 Rendimiento agregado de modelos en diferentes dimensiones de nodo, borde y globales.
 
@@ -22,7 +22,7 @@ Podemos notar que los modelos con mayor dimensionalidad tienden a tener un mejor
 
 A continuación, podemos ver el desglose del rendimiento en función del número de capas GNN.
 
-![Figura 3](visualization3.png)
+![Figura 3][img3]
 
 Gráfico de número de capas frente al rendimiento del modelo y diagrama de dispersión del rendimiento del modelo frente al número de parámetros. Cada punto está coloreado por el número de capas.
 
@@ -34,7 +34,7 @@ Las exploraciones anteriores han dado mensajes contradictorios. Podemos encontra
 
 Aquí desglosamos el rendimiento según el estilo de transmisión de mensajes. En ambos extremos, consideramos modelos que no se comunican entre entidades gráficas ("ninguna") y modelos que tienen mensajes pasados ​​entre nodos, bordes y globales.
 
-![Figura 4](visualization4.png)
+![Figura 4][img4]
 
 Gráfico de transmisión de mensajes frente al rendimiento del modelo y diagrama de dispersión del rendimiento del modelo frente al número de parámetros. Cada punto está coloreado por el paso del mensaje. 
 
