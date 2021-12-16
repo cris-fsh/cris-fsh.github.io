@@ -1,4 +1,4 @@
-# Gentil introducción a Redes Neuronales de Grafos (*Graph Neuranl Networks* o *GNN*)
+# Gentil introducción a Redes Neuronales de Grafos (*Graph Neural Networks* o *GNN*)
 ## Zona de juego GNN
 
 Hasta este punto hemos conocido los componentes para construir la arquitectura de una GNN; el siguiente paso es ir a la práctica.
