@@ -141,7 +141,7 @@ Observe en la siguiente figura las diferentes matrices de adyacencia que pueden 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/kWSOZ9fv2Oo" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 Ahora imagine cuántas matrices de adyacencia posibles tendrá el ejemplo de la figura 21.
-Una forma elegante y eficiente de representar matrices dispersas son las listas de adyacencia. Estas describen la conectividad de la arista \(e_k\( entre los nodos \(n_i\( y \(n_j\( como una tupla \((i,j)\( en la k-ésima entrada de una lista de adyacencias. De esta manera evitamos hacer computación y almacenamiento de las partes desconectadas del grafo y no necesitamos procesar las \(n^2\( entradas de la matriz de adyacencia.
+Una forma elegante y eficiente de representar matrices dispersas son las listas de adyacencia. Estas describen la conectividad de la arista \(e_k\) entre los nodos \(n_i\) y \(n_j\) como una tupla \((i,j)\) en la k-ésima entrada de una lista de adyacencias. De esta manera evitamos hacer computación y almacenamiento de las partes desconectadas del grafo y no necesitamos procesar las \(n^2\) entradas de la matriz de adyacencia.
 
 ![Figura 23. A la izquierda el grafo. A la derecha su representación tensorial (los tensores 'Nodes', 'Edges' y ‘Global’ almacenan las características escalares de los nodos, aristas y contexto global, respectivamente. Mientras que la lista de adyacencias almacena la conectividad.](img23.PNG)
 <figcaption style='text-align:center;'><small>Figura 23. A la izquierda el grafo. A la derecha su representación tensorial (los tensores 'Nodes', 'Edges' y ‘Global’ almacenan las características escalares de los nodos, aristas y contexto global, respectivamente. Mientras que la lista de adyacencias almacena la conectividad.</small></figcaption>
@@ -182,7 +182,7 @@ El último ejemplo anterior muestra el caso más simple de una tarea de clasific
 - **Recolección**: Para cada elemento a ser agrupado (ya sea varios nodos, varias aristas, o el contexto global), se recolectan sus vectores de características y se concatenan armando una matriz.
 - **Agregación**: Los vectores de características reunidos en la matriz se agregan, generalmente a través de una operación suma (compactando la dimensión de la matriz).
 
-Representamos la operación de agrupamiento mediante la letra \(\rho\(, y denotamos que estamos recolectando información desde las aristas hacia los nodos como \(\rho_{E_n→V_n }\(.
+Representamos la operación de agrupamiento mediante la letra \(\rho\), y denotamos que estamos recolectando información desde las aristas hacia los nodos como \(\rho_{E_n→V_n }\).
 
 ![Figura 26. El nodo seleccionado es el remarcado con negro. Se puede observar a la derecha tres vectores de características que se van a sumar, concatenados desde arriba hacia abajo formando una matriz. La primera fila corresponde con el vector de características del nodo, mientras que las otras dos representan los vectores de características recolectados desde las aristas adyacentes al nodo. Luego se hace la operación de agregación mediante la suma, compactando la matriz a un único vector de características agrupado.](img26.PNG)
 <figcaption style='text-align:center;'><small>Figura 26. El nodo seleccionado es el remarcado con negro. Se puede observar a la derecha tres vectores de características que se van a sumar, concatenados desde arriba hacia abajo formando una matriz. La primera fila corresponde con el vector de características del nodo, mientras que las otras dos representan los vectores de características recolectados desde las aristas adyacentes al nodo. Luego se hace la operación de agregación mediante la suma, compactando la matriz a un único vector de características agrupado.</small></figcaption>
@@ -205,7 +205,7 @@ En una tarea, si solo tenemos disponibles las características de los nodos y qu
 ![Figura 30.](img30.PNG)
 <figcaption style='text-align:center;'><small>Figura 30.</small></figcaption>
 
-En los ejemplos anteriores, el modelo de clasificación \(c\( puede ser remplazado fácilmente con cualquie modelo diferenciable, o adaptado a la clasificación multiclase utilizando un modelo lineal generalizado.
+En los ejemplos anteriores, el modelo de clasificación \(c\) puede ser remplazado fácilmente con cualquie modelo diferenciable, o adaptado a la clasificación multiclase utilizando un modelo lineal generalizado.
 
 ![Figura 31.](img31.PNG)
 <figcaption style='text-align:center;'><small>Figura 31. Tarea de predicción extremo a extremo con un modelo GNN</small></figcaption>
