@@ -6,7 +6,7 @@ Con la siguiente figura, exploramos el espacio de las arquitecturas GNN y el des
 
 Cada punto del diagrama de dispersión representa un modelo: el eje x es el número de variables entrenables y el eje y es el rendimiento.
 
-![Figura 1][img1]
+![Figura 1](visualization.png)
 
 Diagrama de dispersión del rendimiento de cada modelo frente a su número de variables entrenables.
 
@@ -14,7 +14,7 @@ Lo primero que hay que notar es que, sorprendentemente, un mayor número de par�
 
 A continuación, podemos observar las distribuciones de rendimiento agregadas en función de la dimensionalidad de las representaciones aprendidas para diferentes atributos de gráficos.
 
-![Figura 2][img2]
+![Figura 2](visualization2.png)
 
 Rendimiento agregado de modelos en diferentes dimensiones de nodo, borde y globales.
 
@@ -22,7 +22,7 @@ Podemos notar que los modelos con mayor dimensionalidad tienden a tener un mejor
 
 A continuación, podemos ver el desglose del rendimiento en función del número de capas GNN.
 
-![Figura 3][img3]
+![Figura 3](visualization3.png)
 
 Gráfico de número de capas frente al rendimiento del modelo y diagrama de dispersión del rendimiento del modelo frente al número de parámetros. Cada punto está coloreado por el número de capas.
 
@@ -34,7 +34,7 @@ Las exploraciones anteriores han dado mensajes contradictorios. Podemos encontra
 
 Aquí desglosamos el rendimiento según el estilo de transmisión de mensajes. En ambos extremos, consideramos modelos que no se comunican entre entidades gráficas ("ninguna") y modelos que tienen mensajes pasados ​​entre nodos, bordes y globales.
 
-![Figura 4][img4]
+![Figura 4](visualization4.png)
 
 Gráfico de transmisión de mensajes frente al rendimiento del modelo y diagrama de dispersión del rendimiento del modelo frente al número de parámetros. Cada punto está coloreado por el paso del mensaje. 
 
@@ -44,20 +44,4 @@ Hay muchas direcciones en las que puede ir desde aquí para obtener un mejor ren
 
 Una de las fronteras de la investigación GNN no es la creación de nuevos modelos y arquitecturas, sino “cómo construir gráficos”, para ser más precisos, dotar a los gráficos de estructuras o relaciones adicionales que se puedan aprovechar. Como vimos en términos generales, cuanto más se comunican los atributos del gráfico, más tendemos a tener mejores modelos. En este caso particular, podríamos considerar hacer que los gráficos moleculares sean más ricos en características, agregando relaciones espaciales adicionales entre nodos, agregando bordes que no sean enlaces o relaciones explícitas que se puedan aprender entre subgráficos.
 
-[img1]: visualization.png "Figura 1"
-
-[img2]: visualization2.png "Figura 2"
-
-[img3]: visualization3.png "Figura 3"
-
-[img4]: visualization4.png "Figura 4"
-
-# **Referencias**
-1. Gráfico de evaluación comparativa Redes neuronales
-V.P. Dwivedi, CK Joshi, T. Laurent, Y. Bengio, X. Bresson.
-2020
-2. Espacio de diseño para redes neuronales gráficas
-J. You, R. Ying, J. Leskovec. 2020.
-3. Agregación de vecindario principal para redes gráficas 
-G. Corso, L. Cavalleri, D. Beaini, P. Lio, P. Velickovic. 2020.
 </div>
