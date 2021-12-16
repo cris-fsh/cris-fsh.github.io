@@ -35,4 +35,4 @@ Los grafos, al estar construidos por vectores de alta dimensión, los reducimos 
 
 Ahora que conocemos la zona de juego, podremos interactuar con el modelo. :)
 
-<iframe width="800" height="600" src="https://www.youtube.com/embed/icW-n6riXIQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe width="640" height="480" src="https://www.youtube.com/embed/icW-n6riXIQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
