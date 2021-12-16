@@ -118,6 +118,167 @@ A la izquierda tenemos un gráfico inicial construido a partir de la escena visu
 
 ![Tarea a nivel de borde 2][img12]
 
+## **Los desafíos del uso de grafos en Machine Learning**
+El primer desafío es pensar cómo representaremos los grafos para que sean compatibles con las redes neuronales.
+Los grafos tienen hasta cuatro tipos de información que potencialmente pueden ser usadas para hacer predicciones: nodos, aristas, contexto global y conectividad. 
+Representar los primeros tres puede ser sencillo, por ejemplo, con los nodos podemos formar una matriz N donde por cada índice i en N se almacene una característica del nodo i.
+Sin embargo, representar la conectividad del grafo es más complicado. La opción más obvia sería usar la matriz de adyacencia, ya que es fácilmente tensorizable. Sin embargo, existen dos inconvenientes principales:
+
+- Si tenemos un grafo con una cantidad de nodos muy grande y sabemos que la cantidad aristas por nodo pueden variar desde muy pocas a muchas, pueden existir casos en que las matrices de adyacencia sean muy ineficientes en el espacio, por ejemplo, si tenemos muchos nodos con muy pocas aristas, como en el caso del conjunto de datos qm9 que observábamos en la tabla de otros ejemplos de grafos en la sección anterior.
+- Puede haber muchas matrices de adyacencia que codifiquen la misma conectividad, por ejemplo, al permutar los nodos en la matriz de adyacencia. Al introducir cada matriz de adyacencia a una red neuronal profunda, no hay garantía de que estas diferentes matrices produzcan el mismo resultado (no son invariantes de permutación) aunque representen el mismo grafo.
+
+
+![Figura 1. Dos matrices de adyacencia que representan al mismo grafo. Observe cómo los nodos fueron permutados.](img21.PNG)
+<figcaption style='text-align:center'><small>Figura 1. Dos matrices de adyacencia que representan al mismo grafo. Observe cómo los nodos fueron permutados.</small></figcaption>
+
+
+Observe en la siguiente figura las diferentes matrices de adyacencia que pueden describir a este pequeño grafo de cuatro nodos:
+
+![Figura 2. En la parte inferior las diferentes matrices de adyacencia para el grafo de la parte superior.](img22.PNG)
+<figcaption style='text-align:center'><small>Figura 2. En la parte inferior las diferentes matrices de adyacencia para el grafo de la parte superior.</small></figcaption>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/kWSOZ9fv2Oo" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+Ahora imagine cuántas matrices de adyacencia posibles tendrá el ejemplo de la figura 1.
+Una forma elegante y eficiente de representar matrices dispersas son las listas de adyacencia. Estas describen la conectividad de la arista $e_k$ entre los nodos $n_i$ y $n_j$ como una tupla $(i,j)$ en la k-ésima entrada de una lista de adyacencias. De esta manera evitamos hacer computación y almacenamiento de las partes desconectadas del grafo y no necesitamos procesar las $n^2$ entradas de la matriz de adyacencia.
+
+![Figura 3. A la izquierda el grafo. A la derecha su representación tensorial (los tensores 'Nodes', 'Edges' y ‘Global’ almacenan las características escalares de los nodos, aristas y contexto global, respectivamente. Mientras que la lista de adyacencias almacena la conectividad.](img23.PNG)
+<figcaption style='text-align:center;'><small>Figura 3. A la izquierda el grafo. A la derecha su representación tensorial (los tensores 'Nodes', 'Edges' y ‘Global’ almacenan las características escalares de los nodos, aristas y contexto global, respectivamente. Mientras que la lista de adyacencias almacena la conectividad.</small></figcaption>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/nQVglhibUr0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+Se debería notar que en la figura 3 se utilizan características escalares por nodo/arista/global, es decir, el tensor Nodes almacena una sola característica por cada nodo en el grafo, el tensor Edges almacena una sola característica por cada arista en el grafo, etcétera. En la realidad es más práctico tener vectores de características por cada nodo/arista/global.
+
+# **Graph Neural Networks**
+
+Una Red Neuronal de Grafos (GNN por sus siglas en inglés) es una transformación optimizable sobre todos los atributos del grafo (nodos, aristas, contexto global) que preserva las simetrías del grafo (invarianza a la permutación)
+Vamos a construir una GNN utilizando el marco de “red neuronal de paso de mensajes” propuesto por Gilmer et al. Utilizando los esquemas de la arquitectura Graph Nets introducidos por Battaglia et al. Las GNN adoptan una arquitectura “grafo a la entrada – grafo a la salida”, por lo que se introducen las características de los nodos, bordes y contexto global de un grafo a la GNN donde se transforman progresivamente sin cambiar la conectividad del grafo entrante.
+
+## **La GNN más simple**
+
+Tomando en cuenta que por cada nodo/arista/global tenemos un vector de características (a diferencia de la figura 3 en que tenemos escalares por cada nodo/arista/global), podemos empezar a construir la GNN.
+
+La GNN más simple consiste en aprender nuevos valores del vector de características para todos los atributos del grafo (nodos, aristas, contexto global). Esta GNN utiliza una red perceptrón multicapa (MLP) o cualquier otro modelo de red neuronal diferenciable representado con f, pero una por cada componente del grafo, es decir, una MLP procesa los vectores de características de los nodos, otra MLP independiente procesa los vectores de características de las aristas, y una tercera MLP independiente procesa el vector de características del contexto global. El vector de características de cada nodo se pasa a través de la MLP correspondiente y se recupera un nodo aprendido. Se hace lo mismo para el vector de características de cada una de las aristas al pasarlas por su MLP correspondiente, y también para el contexto global.
+
+![Figura 4. Modelo simple](img24.PNG)
+<figcaption style='text-align:center;'><small>Figura 4. Modelo simple</small></figcaption>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/6gH1o0yzd3g" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+Debido a que un GNN no actualiza la conectividad del grafo de entrada, podemos describir el grafo de salida con la misma lista de adyacencia y la misma cantidad de vectores de características del grafo de entrada. Sin embargo, el grafo de salida ha actualizado el contenido de cada uno de estos vectores de características pertenecientes a cada nodo, cada arista y el contexto global.
+Veamos un ejemplo. Si queremos hacer una tarea de clasificación binaria en los nodos, y el grafo ya contiene información en los propios nodos, el enfoque es sencillo: por cada vector de características de cada nodo se aplica un clasificador lineal. Es decir, solo necesitamos una red perceptrón (en este caso de una sola capa) representada por c, para procesar el componente ‘nodos’ del grafo.
+
+![Figura 5. Tarea binaria modelo simple](img25.PNG)
+<figcaption style='text-align:center;'><small>Figura 5. Tarea binaria, modelo simple</small></figcaption>
+
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/nRfC-SE1FBA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+## **Predicciones de GNN por Agrupamiento de Información**
+
+El último ejemplo anterior muestra el caso más simple de una tarea de clasificación en los nodos. Pero no siempre es tan simple. Por ejemplo, es posible tener información almacenada en las aristas del grafo, pero no tener información almacenada en los nodos, y aún así, necesitar hacer predicciones o tareas en los nodos. Entonces, necesitamos una forma de recopilar información de las aristas y dársela a los nodos para la predicción. Podemos hacer esto mediante agrupamiento. El agrupamiento procede en dos pasos:
+
+- **Recolección**: Para cada elemento a ser agrupado (ya sea varios nodos, varias aristas, o el contexto global), se recolectan sus vectores de características y se concatenan armando una matriz.
+- **Agregación**: Los vectores de características reunidos en la matriz se agregan, generalmente a través de una operación suma (compactando la dimensión de la matriz).
+
+Representamos la operación de agrupamiento mediante la letra $\rho$, y denotamos que estamos recolectando información desde las aristas hacia los nodos como $\rho_{E_n→V_n }$.
+
+![Figura 6. El nodo seleccionado es el remarcado con negro. Se puede observar a la derecha tres vectores de características que se van a sumar, concatenados desde arriba hacia abajo formando una matriz. La primera fila corresponde con el vector de características del nodo, mientras que las otras dos representan los vectores de características recolectados desde las aristas adyacentes al nodo. Luego se hace la operación de agregación mediante la suma, compactando la matriz a un único vector de características agrupado.](img26.PNG)
+<figcaption style='text-align:center;'><small>Figura 6. El nodo seleccionado es el remarcado con negro. Se puede observar a la derecha tres vectores de características que se van a sumar, concatenados desde arriba hacia abajo formando una matriz. La primera fila corresponde con el vector de características del nodo, mientras que las otras dos representan los vectores de características recolectados desde las aristas adyacentes al nodo. Luego se hace la operación de agregación mediante la suma, compactando la matriz a un único vector de características agrupado.</small></figcaption>
+
+![Figura 7. En este caso a la derecha se observan cinco vectores de características concatenados en la matriz 5x8. La primera fila corresponde con el vector de características del nodo resaltado con negro, mientras que las otras cuatro corresponde con los vectores de características de las aristas adyacentes a dicho nodo. En este caso la matriz se compacta a un vector 1x8 mediante la operación suma, obteniendo el vector agrupado.](img27.PNG)
+<figcaption style='text-align:center;'><small>Figura 7. En este caso a la derecha se observan cinco vectores de características concatenados en la matriz 5x8. La primera fila corresponde con el vector de características del nodo resaltado con negro, mientras que las otras cuatro corresponde con los vectores de características de las aristas adyacentes a dicho nodo. En este caso la matriz se compacta a un vector 1x8 mediante la operación suma, obteniendo el vector agrupado..</small></figcaption>
+
+En una tarea, si solo tenemos disponibles las características de las aristas y queremos hacer predicción de información binaria en los nodos, podemos usar agrupamiento para enrutar (o pasar) información a donde sea necesaria para lograrlo. El modelo que representa este caso es el siguiente:
+
+![Figura 8.](img28.PNG)
+<figcaption style='text-align:center;'><small>Figura 8.</small></figcaption>
+
+En una tarea, si solo tenemos disponibles las características de los nodos y queremos hacer predicción de información binaria en las aristas, podemos usar agrupamiento. El modelo que representa este caso es el siguiente:
+
+![Figura 9.](img29.PNG)
+<figcaption style='text-align:center;'><small>Figura 9.</small></figcaption>
+
+En una tarea, si solo tenemos disponibles las características de los nodos y queremos hacer predicción de información binaria en el contexto global, podemos usar agrupamiento. El modelo que representa este caso es el siguiente:
+
+![Figura 10.](img30.PNG)
+<figcaption style='text-align:center;'><small>Figura 10.</small></figcaption>
+
+En los ejemplos anteriores, el modelo de clasificación $c$ puede ser remplazado fácilmente con cualquie modelo diferenciable, o adaptado a la clasificación multiclase utilizando un modelo lineal generalizado.
+
+![Figura 11.](img31.PNG)
+<figcaption style='text-align:center;'><small>Figura 11. Tarea de predicción extremo a extremo con un modelo GNN</small></figcaption>
+
+Hemos demostrado que podemos construir un modelo de GNN simple, y hacer predicciones binarias enrutando información entre diferentes partes del grafo. Esta técnica de agrupamiento servirá como bloque constructor para diseñar modelos GNN más sofisticados. Si tenemos nuevos atributos en el grafo (aparte de nodos/aristas/global), solo tenemos que definir cómo pasar información de un atributo a otro.
+
+Nota que en la formulación de la GNN más simple (ver figura 5 de la subsección anterior) no usamos la conectividad del grafo dentro de la capa GNN. Cada nodo es procesado independientemente, así también cada arista, de igual manera el contexto global. Solo usamos la conectividad cuando agrupamos información para hacer la predicción (como en las figuras 8, 9 y 10).
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/5xTavAIhOok" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+## **Paso de mensajes entre partes del grafo**
+
+Es una versión más sofisticada de hacer predicciones usando agrupamiento dentro de la capa GNN, con el fin de hacer que nuestros vectores aprendidos sean concientes de la conectividad del grafo. Podemos hacerlo usando el Paso de Mensajes, donde los nodos o aristas vecinos intercambian información que influye en la actualización de los vectores de características de los demás.
+
+El paso de mensajes consiste en tres pasos:
+
+- Para cada nodo del grafo, reunir todos los vectores de características (o mensajes) asociados a los nodos vecinos.
+- Agregar todos los mensajes a través de una función agregada (como la suma).
+- Todos los mensajes agrupados se pasan a través de una función de actualización, generalmente una red neuronal aprendida.
+
+
+![Figura 12.](img32.PNG)
+<figcaption style='text-align:center;'><small>Figura 12. Agrupamiento dentro de la capa GNN y posterior actualización del grafo</small></figcaption>
+
+> En la subsección anterior no se daba este caso, observa que en las figuras 5, 8, 9 y 10, a la izquierda hay un grafo que indica "Final Layer". Esto quiere decir, que primero se aplica el modelo GNN de la figura 4 en la que, por ejemplo, si solo se tienen disponibles como información los vectores de características de los nodos, en la GNN se actualizan solo los nodos y se obtiene el resultado de la "Layer N+1" con los vectores de características de los nodos actualizados, esto se hace iterativamente hasta llegar a la "Final Layer". Posteriormente, si se quieren hacer predicciones sobre las aristas, se hace el agrupamiento de información de los nodos pasándolas a las aristas como se observa en la figura 9. Todo esto se resumió en la figura 11: los "GNN blocks" representan la GNN de la figura 4, mientras que el "Classification Layer" es la tarea final de clasificación del ejemplo que explicábamos posterior a que se de el Agrupamiento de Información, es decir, el agrupamiento de información se encuentra entre "Transformed Graph" y "Classification Layer".
+
+En el caso del Paso de Mensajes, es dentro de la misma GNN donde se hace este paso de información. Así como el Agrupamiento de Información puede ser aplicado ya sea en nodos o aristas, el Paso de Mensajes puede ocurrir entre ya sea nodos o aristas:
+
+
+Cuando esta secuencia de operaciones se aplica una sola vez, hablamos del modelo más simple de Paso de Mensajes en una GNN. 
+
+Esto recuerda a la convolución estándar: en esencia, el paso de mensajes y la convolución son operaciones para agregar y procesar la información de los vecinos de un elemento con el fin de actualizar el valor del elemento. En los grafos, el elemento es un nodo, y en las imágenes, el elemento es un píxel. Sin embargo, el número de nodos vecinos en un grafo puede ser variable, a diferencia de una imagen donde cada píxel tiene un número establecido de elementos vecinos.
+
+Al apilar información en el mensaje y pasarlo todo junto en las capas GNN, un nodo puede eventualmente incorporar información de todo el gráfico: después de tres capas, un nodo tiene información sobre los nodos a tres pasos de distancia.
+
+Podemos actualizar el diagrama para incluir esta nueva fuente de información para los nodos de la siguiente manera:
+
+![Figura 13.](img33.PNG)
+<figcaption style='text-align:center;'><small>Figura 13. Diagrama esquemático del modelo de una GCN (Graph Convolutional Network), que actualiza los vectores de características de los nodos de un grafo por medio del agrupamiento de los vectores de características de los nodos vecinos a una distancia de un grado</small></figcaption>
+
+## **Aprendizaje de representaciones de aristas**
+
+Nuestro conjunto de datos no siempre contiene todos los tipos de información (nodo, arista y contexto global). Cuando queremos hacer una predicción en nodos, pero nuestro conjunto de datos solo tiene información de aristas, mostramos anteriormente cómo usar la agrupación para enrutar la información de las aristas a los nodos, pero solo en el paso de predicción final del modelo. Podemos compartir información entre nodos y aristas dentro de la capa GNN utilizando el paso de mensajes.
+
+Podemos incorporar la información de las aristas vecinas de la misma manera que usamos la información del nodo vecino anteriormente, agrupando primero la información de las aristas, transformando con una función de actualización y almacenando.
+
+Sin embargo, la información del nodo y aristas almacenada en un grafo no son necesariamente del mismo tamaño o forma, por lo que no está claro de inmediato cómo combinarlos. Una forma es aprender un mapeo lineal desde el espacio de aristas hasta el espacio de nodos, y viceversa. Alternativamente, se pueden concatenar juntos antes de la función de actualización.
+
+![Figura 14.](img34.PNG)
+<figcaption style='text-align:center;'><small>Figura 14. Arquitectura esquemática de una capa de Paso de Mensajes. El primer paso "prepara" un mensaje compuesto por la información de una arista y sus nodos conectados, y entonces "pasa" el mensaje al nodo.</small></figcaption>
+
+Determinar qué atributos del grafo actualizamos y en qué orden los actualizamos es una decisión de diseño al construir la GNN. Podríamos elegir si actualizar los vectores de características de los nodos antes de los vectores de características de las aristas, o al revés. Esta es un área abierta de investigación con una variedad de soluciones. Por ejemplo, podríamos actualizar de una manera de "tejido" donde tenemos cuatro representaciones actualizadas que se combinan en nuevas representaciones de nodo y arista: nodo a nodo (lineal), de arista a arista (lineal), de nodo a arista (capa de arista), de arista a nodo (capa de nodo).
+
+![Figura 15.](img35.PNG)
+<figcaption style='text-align:center;'><small>Figura 15. Algunas de las diferentes formas en que podríamos combinar la representación de aristas y nodos en una capa GNN.</small></figcaption>
+
+## **Adición de representaciones de contexto global**
+
+Hay un defecto con las redes que hemos descrito hasta ahora: los nodos que están lejos entre sí en el grafo pueden nunca ser capaces de transferir información de manera eficiente entre sí, incluso si aplicamos el paso de mensajes varias veces. Para un nodo, si tenemos k-capas, la información se propagará a lo sumo k-pasos de distancia. Esto puede ser un problema para situaciones en las que la tarea de predicción depende de nodos o grupos de nodos que están muy separados. Una solución sería que todos los nodos pudieran pasar información entre sí. Desafortunadamente para los grafos grandes esto se vuelve computacionalmente costoso.
+
+Una solución a este problema es mediante el uso de la representación global de un grafo (U) que a veces se le llama nodo maestro o vector de contexto global. Este vector de contexto global está conectado a todos los demás nodos y aristas de la red, y puede actuar como un puente entre ellos para pasar información, construyendo una representación para el grafo en su conjunto. Esto crea una representación más rica y compleja del grafo de lo que se podría haber aprendido de otra manera.
+
+![Figura 16.](img36.PNG)
+<figcaption style='text-align:center;'><small>Figura 16. Esquema de una arquitectura de Graph Nets que aprovecha las representaciones del contecto global.</small></figcaption>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/1dyq7x_rw1A" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+En esta vista todos los atributos del grafo tienen representaciones aprendidas, por lo que podemos aprovecharlas durante la agrupación, condicionando la información de nuestro atributo de interés con respecto al resto. Por ejemplo, para un nodo podemos considerar la información de los nodos vecinos, las aristas conectadas y el contexto global. Para condicionar la actualización del vector de características del nodo a todas estas posibles fuentes de información, simplemente podemos concatenarlas. Además, también podemos asignarlas al mismo espacio a través de un mapa lineal y agregarlos o aplicar una capa de modulación de características, que puede considerarse un mecanismo de atención de características.
+
+
+![Figura 17.](img37.PNG)
+<figcaption style='text-align:center;'><small>Figura 17. Esquema para condicionar la información de un nodo con base en otras tres fuentes de información (nodos adyacentes, aristas adyacentes, contexto global). Este paso corresponde a las operaciones de nodo en la capa Graph Nets.</small></figcaption>
+
+
 ## **Zona de juego GNN**
 
 Hasta este punto hemos conocido los componentes para construir la arquitectura de una GNN; el siguiente paso es ir a la práctica.
