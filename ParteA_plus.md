@@ -1,6 +1,6 @@
 ## **Algunas lecciones empíricas de diseño GNN**
 
-<div style="text-align: justify">Al explorar las opciones de arquitectura anteriores, es posible que haya encontrado que algunos modelos tienen un mejor rendimiento que otros. ¿Hay algunas opciones claras de diseño de GNN que nos darán un mejor rendimiento? Por ejemplo, ¿los modelos GNN más profundos funcionan mejor que los menos profundos? ¿O hay una clara elección entre funciones de agregación? Las respuestas van a depender de los datos, [1] [2], e incluso diferentes formas de caracterizar y construir gráficos pueden dar diferentes respuestas.
+Al explorar las opciones de arquitectura anteriores, es posible que haya encontrado que algunos modelos tienen un mejor rendimiento que otros. ¿Hay algunas opciones claras de diseño de GNN que nos darán un mejor rendimiento? Por ejemplo, ¿los modelos GNN más profundos funcionan mejor que los menos profundos? ¿O hay una clara elección entre funciones de agregación? Las respuestas van a depender de los datos, [1] [2], e incluso diferentes formas de caracterizar y construir gráficos pueden dar diferentes respuestas.
 
 Con la siguiente figura, exploramos el espacio de las arquitecturas GNN y el desempeño de esta tarea a través de algunas opciones de diseño importantes: estilo de transmisión de mensajes, dimensionalidad de las incrustaciones, número de capas y tipo de operación de agregación.
 
@@ -44,4 +44,19 @@ Hay muchas direcciones en las que puede ir desde aquí para obtener un mejor ren
 
 Una de las fronteras de la investigación GNN no es la creación de nuevos modelos y arquitecturas, sino “cómo construir gráficos”, para ser más precisos, dotar a los gráficos de estructuras o relaciones adicionales que se puedan aprovechar. Como vimos en términos generales, cuanto más se comunican los atributos del gráfico, más tendemos a tener mejores modelos. En este caso particular, podríamos considerar hacer que los gráficos moleculares sean más ricos en características, agregando relaciones espaciales adicionales entre nodos, agregando bordes que no sean enlaces o relaciones explícitas que se puedan aprender entre subgráficos.
 
-</div>
+[img1]: visualization.png "Figura 1"
+
+[img2]: visualization2.png "Figura 2"
+
+[img3]: visualization3.png "Figura 3"
+
+[img4]: visualization4.png "Figura 4"
+
+# **Referencias**
+1. Gráfico de evaluación comparativa Redes neuronales
+V.P. Dwivedi, CK Joshi, T. Laurent, Y. Bengio, X. Bresson.
+2020
+2. Espacio de diseño para redes neuronales gráficas
+J. You, R. Ying, J. Leskovec. 2020.
+3. Agregación de vecindario principal para redes gráficas 
+G. Corso, L. Cavalleri, D. Beaini, P. Lio, P. Velickovic. 2020.
