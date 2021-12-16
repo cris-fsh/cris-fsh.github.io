@@ -6,7 +6,7 @@ Con la siguiente figura, exploramos el espacio de las arquitecturas GNN y el des
 
 Cada punto del diagrama de dispersión representa un modelo: el eje x es el número de variables entrenables y el eje y es el rendimiento.
 
-![Figura 1](visualization.png)
+![Figura 1][img1]
 
 Diagrama de dispersión del rendimiento de cada modelo frente a su número de variables entrenables.
 
